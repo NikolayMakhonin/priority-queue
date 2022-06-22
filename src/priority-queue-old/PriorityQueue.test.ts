@@ -1,5 +1,5 @@
 import {PriorityQueue} from './PriorityQueue'
-import {priorityCreate} from 'src/Priority'
+import {priorityCreate} from 'src/priority'
 
 describe('priority-queue-old > PriorityQueue', function () {
   it('base', async function () {

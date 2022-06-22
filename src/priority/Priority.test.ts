@@ -1,7 +1,7 @@
 import {Priority, priorityCompare, priorityCreate} from './Priority'
 import {createTestVariants} from '@flemist/test-variants'
 
-describe('priority > Priority', function () {
+xdescribe('priority > Priority', function () {
   this.timeout(120000)
 
   function orderToString(order: number) {

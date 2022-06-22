@@ -1,20 +1,26 @@
 import {PromiseOrValue} from './contracts'
 import {PairingHeap} from '@flemist/pairing-heap'
 import {CustomPromise} from '@flemist/async-utils'
-import {Priority, priorityCompare} from 'src/priority'
+import {Priority, priorityCompare, priorityCreate} from 'src/priority'
+import {IAbortSignalFast} from '@flemist/abort-controller-fast'
 
 type TQueueItem<T> = {
-  func: () => PromiseOrValue<T>
+  func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>
+  abortSignal: IAbortSignalFast
   priority: Priority
   resolve: (value: T) => void
   reject: (error: Error) => void
 }
 
-const emptyFunc = () => {}
+const emptyFunc = function emptyFunc(o) {
+  return o
+}
 
 export function queueItemLessThan(o1: TQueueItem<any>, o2: TQueueItem<any>): boolean {
   return priorityCompare(o1.priority, o2.priority) < 0
 }
+
+let nextOrder: number = 1
 
 export class PriorityQueue {
   private readonly _queue: PairingHeap<TQueueItem<any>>
@@ -25,14 +31,19 @@ export class PriorityQueue {
     })
   }
 
-  run<T>(func: () => PromiseOrValue<T>, priority?: Priority): Promise<T> {
-    const promise = new CustomPromise<T>()
+  run<T>(
+    func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
+    priority?: Priority,
+    abortSignal?: IAbortSignalFast,
+  ): Promise<T> {
+    const promise = new CustomPromise<T>(abortSignal)
 
     this._queue.add({
-      priority,
+      priority: priorityCreate(nextOrder++, priority),
       func,
-      resolve: promise.resolve,
-      reject : promise.reject,
+      abortSignal,
+      resolve : promise.resolve,
+      reject  : promise.reject,
     })
 
     void this._process()
@@ -47,23 +58,29 @@ export class PriorityQueue {
     }
     this._processRunning = true
 
+    const _this = this
+    const queue = this._queue
     while (true) {
       await Promise.resolve().then(emptyFunc)
 
-      if (this._queue.isEmpty) {
+      if (queue.isEmpty) {
+        _this._processRunning = false
         break
       }
 
-      const item = this._queue.deleteMin()
-      try {
-        const result = item.func && await item.func()
-        item.resolve(result)
+      const item = queue.deleteMin()
+      if (item.abortSignal && item.abortSignal.aborted) {
+        item.reject(item.abortSignal.reason)
       }
-      catch (err) {
-        item.reject(err)
+      else {
+        try {
+          const result = item.func && await item.func()
+          item.resolve(result)
+        }
+        catch (err) {
+          item.reject(err)
+        }
       }
     }
-
-    this._processRunning = false
   }
 }
