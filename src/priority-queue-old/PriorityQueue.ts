@@ -60,16 +60,10 @@ export class PriorityQueue {
 
     const _this = this
     const queue = this._queue
-    let first = true
-    function next() {
-      if (first) {
-        first = false
-        return Promise.resolve().then(emptyFunc)
-      }
-
+    async function next() {
       if (queue.isEmpty) {
         _this._processRunning = false
-        return false
+        return
       }
 
       const item = queue.deleteMin()
@@ -92,16 +86,12 @@ export class PriorityQueue {
         }
       }
 
-      return true
+      await 0
+
+      void Promise.resolve().then(next)
     }
 
-    void awaiter(next)
-
-    // const promise = new CustomPromise()
-    // void promise.promise.then(() => {
-    //   return Promise.resolve()
-    // }).then(next)
-    // promise.resolve()
+    void Promise.resolve().then(next)
   }
 }
 
