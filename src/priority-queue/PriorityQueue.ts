@@ -60,7 +60,7 @@ export class PriorityQueue {
 
     const _this = this
     const queue = this._queue
-    async function next() {
+    function next() {
       if (queue.isEmpty) {
         _this._processRunning = false
         return
@@ -85,9 +85,6 @@ export class PriorityQueue {
           item.reject(err)
         }
       }
-
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      await void 0 // required for old browsers that not supported native generators, you can't bypass it using Promises only
 
       void Promise.resolve().then(next)
     }

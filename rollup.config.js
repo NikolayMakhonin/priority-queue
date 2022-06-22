@@ -191,16 +191,15 @@ const browserTestsConfig = {
         target: 'es5',
       },
     }),
-    // istanbul({
-    //   ...nycrc,
-    // }),
+    istanbul({
+      ...nycrc,
+    }),
     babel({
       configFile  : path.resolve(__dirname, '.babelrc.cjs'), // enable babel for node_modules
       extensions  : ['.ts', '.js', '.cjs', '.mjs'],
       babelHelpers: 'runtime',
       exclude     : [
         '**/node_modules/rollup*/**',
-        '**/node_modules/tslib/**',
         '**/node_modules/@babel/**',
         '**/node_modules/core-js*/**',
       ],
