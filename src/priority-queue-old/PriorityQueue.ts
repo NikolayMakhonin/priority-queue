@@ -60,10 +60,16 @@ export class PriorityQueue {
 
     const _this = this
     const queue = this._queue
-    async function next() {
+    let first = true
+    function next() {
+      if (first) {
+        first = false
+        return Promise.resolve().then(emptyFunc)
+      }
+
       if (queue.isEmpty) {
         _this._processRunning = false
-        return
+        return false
       }
 
       const item = queue.deleteMin()
@@ -72,7 +78,13 @@ export class PriorityQueue {
       }
       else {
         try {
-          const result = item.func && await item.func()
+          const result = item.func && item.func(item.abortSignal)
+          if (result && typeof result.then === 'function') {
+            result
+              .then(item.resolve, item.reject)
+              .then(next)
+            return
+          }
           item.resolve(result)
         }
         catch (err) {
@@ -80,15 +92,41 @@ export class PriorityQueue {
         }
       }
 
-      void new Promise<void>(resolve => {
-        resolve(Promise.resolve().then(emptyFunc))
-      })
-        .then(next)
+      return true
     }
 
-    void new Promise<void>(resolve => {
-      resolve(Promise.resolve().then(emptyFunc))
-    })
-      .then(next)
+    void awaiter(next)
+
+    // const promise = new CustomPromise()
+    // void promise.promise.then(() => {
+    //   return Promise.resolve()
+    // }).then(next)
+    // promise.resolve()
   }
+}
+
+function awaiter(next) {
+  function adopt(value) {
+    return value instanceof Promise ? value : new Promise(function (resolve) {
+      resolve(value)
+    })
+  }
+  return new Promise<void>(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(next())
+      }
+      catch (e) {
+        reject(e)
+      }
+    }
+    function step(result) {
+      if (!result) {
+        resolve()
+        return
+      }
+      void adopt(result).then(fulfilled)
+    }
+    step(next())
+  })
 }

@@ -35,6 +35,8 @@ describe('priority-queue-old > PriorityQueue', function () {
       assert.strictEqual(log[i], 'run' + i)
     }
 
+    console.log(log.join('\r\n'))
+
     let prevIndex = count - 1
     for (let i = count; i < log.length; i++) {
       const index = parseInt(log[i].match(/\d+/), 10)
@@ -42,7 +44,5 @@ describe('priority-queue-old > PriorityQueue', function () {
       prevIndex = index
       // console.log(index)
     }
-
-    console.log(log.join('\r\n'))
   })
 })
