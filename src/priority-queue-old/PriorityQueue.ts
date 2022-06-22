@@ -86,7 +86,8 @@ export class PriorityQueue {
         }
       }
 
-      await 0
+      // eslint-disable-next-line @typescript-eslint/await-thenable
+      await void 0 // required for old browsers that not supported native generators
 
       void Promise.resolve().then(next)
     }

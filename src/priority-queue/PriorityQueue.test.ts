@@ -5,7 +5,7 @@ import {IAbortSignalFast, IAbortControllerFast, AbortControllerFast, AbortError}
 import {ITimeController, TimeControllerMock} from '@flemist/time-controller'
 import {delay} from '@flemist/async-utils'
 
-xdescribe('priority-queue > PriorityQueue', function _describe() {
+describe('priority-queue > PriorityQueue', function _describe() {
   it('base', async function () {
     const queue = new PriorityQueue()
     const log = []
