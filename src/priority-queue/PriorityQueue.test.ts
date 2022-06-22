@@ -6,7 +6,7 @@ import {ITimeController, TimeControllerMock} from '@flemist/time-controller'
 import {delay} from '@flemist/async-utils'
 
 describe('priority-queue > PriorityQueue', function _describe() {
-  xit('base', async function () {
+  it('base', async function () {
     const queue = new PriorityQueue()
     const log = []
 
@@ -414,7 +414,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
     })()
   })
 
-  xit('variants', async function () {
+  it('variants', async function () {
     this.timeout(1200000)
 
     await testVariants({
