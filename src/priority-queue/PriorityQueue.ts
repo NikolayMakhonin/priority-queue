@@ -46,24 +46,29 @@ export class PriorityQueue {
       reject  : promise.reject,
     })
 
-    this._process()
+    void this._process()
 
     return promise.promise
   }
 
   _processRunning: boolean
-  private _process() {
+  private async _process() {
     if (this._processRunning) {
       return
     }
     this._processRunning = true
 
-    const _this = this
     const queue = this._queue
-    function next() {
+
+    while (true) {
+      // eslint-disable-next-line @typescript-eslint/await-thenable
+      await 0
+
+      // void Promise.resolve().then(emptyFunc).then(next)
+
       if (queue.isEmpty) {
-        _this._processRunning = false
-        return
+        this._processRunning = false
+        break
       }
 
       const item = queue.deleteMin()
@@ -72,12 +77,9 @@ export class PriorityQueue {
       }
       else {
         try {
-          const result = item.func && item.func(item.abortSignal)
+          let result = item.func && item.func(item.abortSignal)
           if (result && typeof result.then === 'function') {
-            result
-              .then(item.resolve, item.reject)
-              .then(next)
-            return
+            result = await result
           }
           item.resolve(result)
         }
@@ -85,10 +87,6 @@ export class PriorityQueue {
           item.reject(err)
         }
       }
-
-      void Promise.resolve().then(next)
     }
-
-    void Promise.resolve().then(emptyFunc).then(next)
   }
 }
