@@ -67,18 +67,18 @@ describe('priority-queue > PriorityQueue', function _describe() {
     timeStart: number,
   ) {
     return function func(abortSignal?: IAbortSignalFast) {
-      results.push(`${timeController.now() - timeStart}: ${name} start`)
+      results.push(`${timeController.now() - timeStart}-2: ${name} start`)
       if (delayTime != null) {
         return delay(delayTime, abortSignal, timeController)
           .then(function delayThen() {
-            results.push(`${timeController.now() - timeStart}: ${name} end`)
+            results.push(`${timeController.now() - timeStart}-3: ${name} end`)
             return name
           })
       }
-      if (abortSignal.aborted) {
+      if (abortSignal?.aborted) {
         throw abortSignal.reason
       }
-      results.push(`${timeController.now() - timeStart}: ${name} end`)
+      results.push(`${timeController.now() - timeStart}-3: ${name} end`)
       return name
     }
   }
@@ -93,20 +93,20 @@ describe('priority-queue > PriorityQueue', function _describe() {
     const func = createFunc(funcParams.name, results, funcParams.runTime, timeController, timeStart)
     
     function enqueue() {
-      results.push(`${timeController.now() - timeStart}: ${funcParams.name} enqueue`)
-      const promise = priorityQueue.run(func, priorityCreate(funcParams.order), funcParams.abortController.signal)
+      results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
+      const promise = priorityQueue.run(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
       assert.ok(typeof promise.then === 'function')
       promise
         .then(
           function runThen(result) {
-            results.push(`${timeController.now() - timeStart}: ${funcParams.name} result: ${result}`)
+            results.push(`${timeController.now() - timeStart}-3: ${funcParams.name} result: ${result}`)
           },
           function runError(err) {
             if (typeof err !== 'string') {
               results.push('ERROR: ' + err.stack)
             }
             else {
-              results.push(`${timeController.now() - timeStart}: ${funcParams.name} aborted: ${err}`)
+              results.push(`${timeController.now() - timeStart}-3: ${funcParams.name} aborted: ${err}`)
             }
           },
         )
@@ -170,7 +170,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
         if (state[i] === null) {
           if (time === funcParams.startTime) {
             state[i] = 'enqueued'
-            resultsExpected[index++] = `${funcParams.startTime}: ${funcParams.name} enqueue`
+            resultsExpected[index++] = `${funcParams.startTime}-1: ${funcParams.name} enqueue`
           }
         }
       }
@@ -180,7 +180,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
         if (state[i] === 'started' || state[i] === 'enqueued') {
           if (funcParams.abortTime != null && time === funcParams.startTime + funcParams.abortTime) {
             state[i] = 'aborted'
-            resultsExpected[index++] = `${time}: ${funcParams.name} aborted: ${funcParams.name}`
+            resultsExpected[index++] = `${time}-3: ${funcParams.name} aborted: ${funcParams.name}`
             if (startedFuncParams === funcParams) {
               startedFuncParams = null
               startedFuncParamsIndex = null
@@ -191,8 +191,8 @@ describe('priority-queue > PriorityQueue', function _describe() {
 
       if (startedFuncParams && time === startedFuncParamsEndTime) {
         state[startedFuncParamsIndex] = 'completed'
-        resultsExpected[index++] = `${time}: ${startedFuncParams.name} end`
-        resultsExpected[index++] = `${time}: ${startedFuncParams.name} result: ${startedFuncParams.name}`
+        resultsExpected[index++] = `${time}-3: ${startedFuncParams.name} end`
+        resultsExpected[index++] = `${time}-3: ${startedFuncParams.name} result: ${startedFuncParams.name}`
         startedFuncParams = null
         startedFuncParamsIndex = null
       }
@@ -217,7 +217,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
             : startedFuncParams.startTime + startedFuncParams.abortTime
           state[startedFuncParamsIndex] = 'started'
           if (time !== startedFuncParamsAbortTime) {
-            resultsExpected[index++] = `${time}: ${startedFuncParams.name} start`
+            resultsExpected[index++] = `${time}-2: ${startedFuncParams.name} start`
             startedFuncParamsEndTime = time + (startedFuncParams.runTime || 0)
           }
         }
@@ -231,6 +231,16 @@ describe('priority-queue > PriorityQueue', function _describe() {
     }
 
     return resultsExpected
+  }
+
+  function compare(o1, o2) {
+    if (o1 < o2) {
+      return -1
+    }
+    if (o1 > o2) {
+      return 1
+    }
+    return 0
   }
 
   const testVariants = createTestVariants(async function testVariant({
@@ -275,7 +285,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
         startTime      : delayStart1,
         runTime        : delayRun1,
         abortTime      : abortTime1,
-        abortController: new AbortControllerFast(),
+        abortController: abortTime1 == null ? null :new AbortControllerFast(),
         order          : order1,
       },
       {
@@ -283,7 +293,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
         startTime      : delayStart2,
         runTime        : delayRun2,
         abortTime      : abortTime2,
-        abortController: new AbortControllerFast(),
+        abortController: abortTime2 == null ? null :new AbortControllerFast(),
         order          : order2,
       },
       {
@@ -291,7 +301,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
         startTime      : delayStart3,
         runTime        : delayRun3,
         abortTime      : abortTime3,
-        abortController: new AbortControllerFast(),
+        abortController: abortTime3 == null ? null : new AbortControllerFast(),
         order          : order3,
       },
     ]
@@ -308,13 +318,35 @@ describe('priority-queue > PriorityQueue', function _describe() {
 
     await awaitTime(timeController, 9, 15)
 
-    assert.deepStrictEqual(results, getExpectedResults(funcsParams))
+    const expectedResults = getExpectedResults(funcsParams)
+
+    // if (!arrayEquals(results, expectedResults)) {
+    assert.deepStrictEqual(
+      results.sort(compare),
+      expectedResults.sort(compare),
+    )
+    // }
 
     results.length = 0
     timeController.addTime(1000000)
     await awaitTime(timeController, 1, 20)
     assert.strictEqual(results.length, 0)
   })
+
+  function arrayEquals<T>(a1: T[], a2: T[]): boolean {
+    const set1 = new Set(a1)
+    const set2 = new Set(a2)
+
+    let result = true
+    set1.forEach(o => {
+      result &&= set2.has(o)
+    })
+    set2.forEach(o => {
+      result &&= set1.has(o)
+    })
+
+    return result
+  }
 
   xit('custom 1', async function () {
     this.timeout(300000)
@@ -417,10 +449,12 @@ describe('priority-queue > PriorityQueue', function _describe() {
   it('variants', async function () {
     this.timeout(1200000)
 
+    const isBrowser = typeof window !== 'undefined'
+
     await testVariants({
-      abortTime1: [null, 0, 1, 2],
-      abortTime2: [null, 0, 1, 2],
-      abortTime3: [null, 0, 1, 2],
+      abortTime1: isBrowser ? [null, 2] : [null, 0, 1, 2],
+      abortTime2: isBrowser ? [null, 1] : [null, 0, 1, 2],
+      abortTime3: isBrowser ? [null, 0] : [null, 0, 1, 2],
 
       order1: [0, 1, 2],
       order2: [0, 1, 2],
@@ -430,9 +464,9 @@ describe('priority-queue > PriorityQueue', function _describe() {
       delayRun2: [null, 1, 2],
       delayRun3: [null, 1, 2],
 
-      delayStart1: [0, 1, 2],
-      delayStart2: [0, 1, 2],
-      delayStart3: [0, 1, 2],
+      delayStart1: isBrowser ? [1, 2] : [0, 1, 2],
+      delayStart2: isBrowser ? [0, 2] : [0, 1, 2],
+      delayStart3: isBrowser ? [0, 1] : [0, 1, 2],
     })()
   })
 })

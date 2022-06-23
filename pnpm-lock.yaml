@@ -8,12 +8,12 @@ specifiers:
   '@babel/preset-env': 7.18.2
   '@babel/runtime-corejs3': 7.18.3
   '@flemist/abort-controller-fast': ^0.0.5
-  '@flemist/async-utils': 0.0.0
+  '@flemist/async-utils': 0.0.1
   '@flemist/copy-glob-flat': 0.0.5
   '@flemist/karma-custom-launcher': 0.0.0
   '@flemist/pairing-heap': ^0.0.1
   '@flemist/test-utils': 0.0.7
-  '@flemist/test-variants': 0.0.13
+  '@flemist/test-variants': 0.0.14
   '@flemist/time-controller': ^0.0.1
   '@rollup/plugin-alias': 3.1.9
   '@rollup/plugin-babel': 5.3.1
@@ -57,6 +57,7 @@ specifiers:
 
 dependencies:
   '@flemist/abort-controller-fast': 0.0.5
+  '@flemist/async-utils': 0.0.1
   '@flemist/pairing-heap': 0.0.1
   '@flemist/time-controller': 0.0.1
   tslib: 2.4.0
@@ -68,11 +69,10 @@ devDependencies:
   '@babel/plugin-transform-runtime': 7.18.5_@babel+core@7.18.5
   '@babel/preset-env': 7.18.2_@babel+core@7.18.5
   '@babel/runtime-corejs3': 7.18.3
-  '@flemist/async-utils': 0.0.0
   '@flemist/copy-glob-flat': 0.0.5
   '@flemist/karma-custom-launcher': 0.0.0
   '@flemist/test-utils': 0.0.7
-  '@flemist/test-variants': 0.0.13
+  '@flemist/test-variants': 0.0.14
   '@rollup/plugin-alias': 3.1.9_rollup@2.75.7
   '@rollup/plugin-babel': 5.3.1_za5spbk65gc2bmrclluhieacz4
   '@rollup/plugin-commonjs': 21.1.0_rollup@2.75.7
@@ -1310,15 +1310,16 @@ packages:
     resolution: {integrity: sha512-ewpqfmNx+V5dqTzVBxi7syhhsFRk5ktNOd0d85tKyGkqwzoMyJSYGBPmycYhlUDSsIN/3Nb2EaE0tPOtfw6PNQ==}
     dependencies:
       tslib: 2.4.0
+    dev: false
 
-  /@flemist/async-utils/0.0.0:
-    resolution: {integrity: sha512-cO5DwjJsriieCnAz8voJH3cG0NrEWToNLDXLegvIZpeUr8sMThCQUPcGEIUGryc3Hfm3CeVQctpQvHcKJHsOcA==}
+  /@flemist/async-utils/0.0.1:
+    resolution: {integrity: sha512-TlsQZj0bvaqNk/RW3kFwhfQk3VjMyaTIvFVRhgx+WdbNrMUzvZMVJJ183I5P74VqgtacNjZ03fjPZAZlk0xMmw==}
     engines: {node: '>=10.4.0', pnpm: ^7.1.6}
     dependencies:
       '@flemist/abort-controller-fast': 0.0.5
       '@flemist/time-controller': 0.0.1
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@flemist/copy-glob-flat/0.0.5:
     resolution: {integrity: sha512-nw2x3zS78uRv7jlR709oXiMXhtTlTS2+WJiy3aTabcayv50CNHMKXevv9WR7YjUJzS7743EdPJl5wAKjIq9Fdg==}
@@ -1339,6 +1340,7 @@ packages:
     engines: {node: '>=10.4.0', pnpm: ^7.1.6}
     dependencies:
       tslib: 2.4.0
+    dev: false
 
   /@flemist/test-utils/0.0.7:
     resolution: {integrity: sha512-HJxyDzk0JzTmroizBpnyUfFxTS+Zklwta2jyVbSljiykH8xgNF/M6Y8WXLUrF8c6bw2dhvD0ZzGdivR3yU2Ihg==}
@@ -1347,8 +1349,8 @@ packages:
       tslib: 2.4.0
     dev: true
 
-  /@flemist/test-variants/0.0.13:
-    resolution: {integrity: sha512-FoDlNV+tF2S8DWMi765ICEhAxHhEBctLOov+CJvcsMGd87V76L/5norcnshWXQ+tXHvr8pHOdEzqoyXiaew0Vg==}
+  /@flemist/test-variants/0.0.14:
+    resolution: {integrity: sha512-s2CHX4D2wyeSNTi1wTkpB4HqAuNSlXxiwJwvbQwZCGUclfalOKJxnG5t20S9lMx0y4cGNe8MAptXboD6jYzDDg==}
     engines: {node: '>=10.4.0', pnpm: ^7.1.6}
     dependencies:
       tslib: 2.4.0
@@ -1360,6 +1362,7 @@ packages:
     dependencies:
       '@flemist/pairing-heap': 0.0.1
       tslib: 2.4.0
+    dev: false
 
   /@humanwhocodes/config-array/0.9.5:
     resolution: {integrity: sha512-ObyMyWxZiCu/yTisA7uzx81s40xR2fD5Cg/2Kq7G02ajkNubJf6BopgDTmDyc3U7sXpNKM8cYOw7s7Tyr+DnCw==}

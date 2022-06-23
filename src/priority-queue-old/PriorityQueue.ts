@@ -12,9 +12,9 @@ type TQueueItem<T> = {
   reject: (error: Error) => void
 }
 
-const emptyFunc = function emptyFunc(o) {
-  return o
-}
+// const emptyFunc = function emptyFunc(o) {
+//   return o
+// }
 
 export function queueItemLessThan(o1: TQueueItem<any>, o2: TQueueItem<any>): boolean {
   return priorityCompare(o1.priority, o2.priority) < 0
@@ -91,30 +91,4 @@ export class PriorityQueue {
 
     void Promise.resolve().then(next)
   }
-}
-
-function awaiter(next) {
-  function adopt(value) {
-    return value instanceof Promise ? value : new Promise(function (resolve) {
-      resolve(value)
-    })
-  }
-  return new Promise<void>(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(next())
-      }
-      catch (e) {
-        reject(e)
-      }
-    }
-    function step(result) {
-      if (!result) {
-        resolve()
-        return
-      }
-      void adopt(result).then(fulfilled)
-    }
-    step(next())
-  })
 }
