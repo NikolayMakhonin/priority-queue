@@ -7,6 +7,9 @@ var pairingHeap = require('@flemist/pairing-heap');
 var asyncUtils = require('@flemist/async-utils');
 var priority_Priority = require('../priority/Priority.cjs');
 
+// const emptyFunc = function emptyFunc(o) {
+//   return o
+// }
 function queueItemLessThan(o1, o2) {
     return priority_Priority.priorityCompare(o1.priority, o2.priority) < 0;
 }
