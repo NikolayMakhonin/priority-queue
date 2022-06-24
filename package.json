@@ -14,11 +14,8 @@
     "url": "git+https://github.com/NikolayMakhonin/priority-queue.git"
   },
   "keywords": [
-    "test",
-    "variants",
-    "combinations",
-    "enumeration",
-    "helper"
+    "priority",
+    "priority queue"
   ],
   "author": {
     "name": "Nikolay Makhonin",
