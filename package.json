@@ -1,6 +1,6 @@
 {
   "name": "@flemist/priority-queue",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "TODO",
   "main": "dist/lib/index.cjs",
   "module": "dist/lib/index.mjs",
@@ -39,8 +39,7 @@
     "lint:fix": "eslint --fix ./**/*.{js,cjs,mjs,ts,tsx}",
     "lint:wizard": "eslint-nibble --cache --multi ./**/*.{js,cjs,mjs,ts,tsx}",
     "build:js": "rimraf dist/lib && cpy \"**/assets/**\" \"../dist/lib/\" --parents --cwd=src && rollup -c",
-    "build:types": "tsc --outDir dist/lib --declaration",
-    "build": "rimraf dist && pnpm run build:js && pnpm run build:types",
+    "build": "rimraf dist && pnpm run build:js",
     "coverage:merge": "rimraf tmp/coverage/{all,merge} && cp-flat \"tmp/coverage/*/json/**/*.json\" \"tmp/coverage/merge\" && nyc report -r lcov --report-dir tmp/coverage/all/lcov --temp-dir \"tmp/coverage/merge/\"",
     "coverage:check": "pnpm run coverage:merge && nyc check-coverage --report-dir tmp/coverage/all/lcov --lines 50 --functions 50 --branches 50 --statements 50",
     "test:mocha": "mocha ./src/**/*.test.*",
@@ -74,6 +73,7 @@
     "@types/fs-extra": "9.0.13",
     "@types/mocha": "9.1.1",
     "@types/node": "18.0.0",
+    "@zerollup/ts-transform-paths": "1.7.18",
     "cpy-cli": "=3.1.1",
     "eslint": "8.18.0",
     "eslint-config-pro": "3.0.14",
@@ -102,7 +102,7 @@
   },
   "dependencies": {
     "@flemist/abort-controller-fast": "^0.0.5",
-    "@flemist/async-utils": "0.0.1",
+    "@flemist/async-utils": "^0.0.1",
     "@flemist/pairing-heap": "^0.0.1",
     "@flemist/time-controller": "^0.0.1",
     "tslib": "^2.4.0"
