@@ -8,7 +8,7 @@ specifiers:
   '@babel/preset-env': 7.18.2
   '@babel/runtime-corejs3': 7.18.3
   '@flemist/abort-controller-fast': ^0.0.5
-  '@flemist/async-utils': 0.0.1
+  '@flemist/async-utils': ^0.0.1
   '@flemist/copy-glob-flat': 0.0.5
   '@flemist/karma-custom-launcher': 0.0.0
   '@flemist/pairing-heap': ^0.0.1
@@ -28,6 +28,7 @@ specifiers:
   '@types/fs-extra': 9.0.13
   '@types/mocha': 9.1.1
   '@types/node': 18.0.0
+  '@zerollup/ts-transform-paths': ^1.7.18
   cpy-cli: 3.1.1
   eslint: 8.18.0
   eslint-config-pro: 3.0.14
@@ -86,6 +87,7 @@ devDependencies:
   '@types/fs-extra': 9.0.13
   '@types/mocha': 9.1.1
   '@types/node': 18.0.0
+  '@zerollup/ts-transform-paths': 1.7.18_typescript@4.7.4
   cpy-cli: 3.1.1
   eslint: 8.18.0
   eslint-config-pro: 3.0.14_b5e7v2qnwxfo6hmiq56u52mz3e
@@ -1866,6 +1868,24 @@ packages:
 
   /@ungap/promise-all-settled/1.1.2:
     resolution: {integrity: sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==}
+    dev: true
+
+  /@zerollup/ts-helpers/1.7.18_typescript@4.7.4:
+    resolution: {integrity: sha512-S9zN+y+i5yN/evfWquzSO3lubqPXIsPQf6p9OiPMpRxDx/0totPLF39XoRw48Dav5dSvbIE8D2eAPpXXJxvKwg==}
+    peerDependencies:
+      typescript: '>=3.7.2'
+    dependencies:
+      resolve: 1.22.0
+      typescript: 4.7.4
+    dev: true
+
+  /@zerollup/ts-transform-paths/1.7.18_typescript@4.7.4:
+    resolution: {integrity: sha512-YPVUxvWQVzRx1OBN0Pmkd58+R9FcfUJuwTaPUSoi5rKxuXMtxevTXdfi0w5mEaIH8b0DfL+wg0wFDHiJE+S2zA==}
+    peerDependencies:
+      typescript: '>=3.7.2'
+    dependencies:
+      '@zerollup/ts-helpers': 1.7.18_typescript@4.7.4
+      typescript: 4.7.4
     dev: true
 
   /abbrev/1.1.1:
