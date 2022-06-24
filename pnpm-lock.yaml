@@ -28,8 +28,8 @@ specifiers:
   '@types/fs-extra': 9.0.13
   '@types/mocha': 9.1.1
   '@types/node': 18.0.0
-  '@zerollup/ts-transform-paths': ^1.7.18
-  cpy-cli: 3.1.1
+  '@zerollup/ts-transform-paths': 1.7.18
+  cpy-cli: '=3.1.1'
   eslint: 8.18.0
   eslint-config-pro: 3.0.14
   fs-extra: 10.1.0

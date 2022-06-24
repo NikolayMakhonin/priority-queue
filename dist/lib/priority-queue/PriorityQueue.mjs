@@ -3,6 +3,9 @@ import { PairingHeap } from '@flemist/pairing-heap';
 import { CustomPromise } from '@flemist/async-utils';
 import { priorityCompare, priorityCreate } from '../priority/Priority.mjs';
 
+// const emptyFunc = function emptyFunc(o) {
+//   return o
+// }
 function queueItemLessThan(o1, o2) {
     return priorityCompare(o1.priority, o2.priority) < 0;
 }
