@@ -217,9 +217,11 @@ describe('priority-queue > PriorityQueue', function _describe() {
           if (state[i] === 'enqueued') {
             const funcParams = funcsParams[i]
             if (
-              !startedFuncParams
+              time >= funcParams.startTime + funcParams.readyToRunTime
+              && (!startedFuncParams
               || funcParams.order < startedFuncParams.order
-              || funcParams.order === startedFuncParams.order && funcParams.startTime < startedFuncParams.startTime
+              || funcParams.order === startedFuncParams.order
+                && funcParams.startTime < startedFuncParams.startTime)
             ) {
               startedFuncParamsIndex = i
               startedFuncParams = funcParams
