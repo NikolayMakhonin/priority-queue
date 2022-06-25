@@ -19,7 +19,7 @@ export interface IPriorityQueue {
 }
 
 export interface IPriorityQueueTask {
-  enqueue<T>(
+  runTask<T>(
     func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
     priority?: Priority,
     abortSignal?: IAbortSignalFast,

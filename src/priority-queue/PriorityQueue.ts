@@ -37,12 +37,12 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
     priority?: Priority,
     abortSignal?: IAbortSignalFast,
   ): Promise<T> {
-    const task = this.enqueue(func, priority, abortSignal)
+    const task = this.runTask(func, priority, abortSignal)
     task.setReadyToRun(true)
     return task.result
   }
 
-  enqueue<T>(
+  runTask<T>(
     func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
     priority?: Priority,
     abortSignal?: IAbortSignalFast,

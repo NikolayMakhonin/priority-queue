@@ -100,7 +100,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
 
       let promise: Promise<string>
       if (funcParams.readyToRunTime) {
-        const task = priorityQueue.enqueue(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
+        const task = priorityQueue.runTask(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
         promise = task.result
         timeController.setTimeout(() => {
           task.setReadyToRun(true)
