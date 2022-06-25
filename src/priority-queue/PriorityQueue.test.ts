@@ -96,21 +96,17 @@ describe('priority-queue > PriorityQueue', function _describe() {
     const func = createFunc(funcParams.name, results, funcParams.runTime, timeController, timeStart)
     
     function enqueue() {
-      results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
       let promise: Promise<string>
       if (funcParams.useReadyToRun) {
         const task = priorityQueue.enqueue(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
         promise = task.result
-        if (funcParams.startTime > 0) {
-          timeController.setTimeout(() => {
-            task.setReadyToRun(true)
-          }, funcParams.startTime)
-        }
-        else {
+        timeController.setTimeout(() => {
+          results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
           task.setReadyToRun(true)
-        }
+        }, funcParams.startTime)
       }
       else {
+        results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
         promise = priorityQueue.run(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
       }
       assert.ok(typeof promise.then === 'function')
@@ -136,7 +132,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
       }, funcParams.startTime + funcParams.abortTime)
     }
     if (funcParams.useReadyToRun) {
-      timeController.setTimeout(enqueue, 0)
+      enqueue()
     }
     else {
       timeController.setTimeout(enqueue, funcParams.startTime)
@@ -488,7 +484,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
     const isBrowser = typeof window !== 'undefined'
 
     await testVariants({
-      useReadyToRun: [false, true],
+      useReadyToRun: [true, false],
 
       abortTime1: isBrowser ? [null, 2] : [null, 0, 1, 2],
       abortTime2: isBrowser ? [null, 1] : [null, 0, 1, 2],
