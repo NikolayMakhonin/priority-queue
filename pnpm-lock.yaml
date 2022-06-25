@@ -11,7 +11,7 @@ specifiers:
   '@flemist/async-utils': ^0.0.1
   '@flemist/copy-glob-flat': 0.0.5
   '@flemist/karma-custom-launcher': 0.0.0
-  '@flemist/pairing-heap': ^0.0.1
+  '@flemist/pairing-heap': ^0.0.2
   '@flemist/test-utils': 0.0.7
   '@flemist/test-variants': 0.0.14
   '@flemist/time-controller': ^0.0.1
@@ -59,7 +59,7 @@ specifiers:
 dependencies:
   '@flemist/abort-controller-fast': 0.0.5
   '@flemist/async-utils': 0.0.1
-  '@flemist/pairing-heap': 0.0.1
+  '@flemist/pairing-heap': 0.0.2
   '@flemist/time-controller': 0.0.1
   tslib: 2.4.0
 
@@ -1339,6 +1339,13 @@ packages:
 
   /@flemist/pairing-heap/0.0.1:
     resolution: {integrity: sha512-bsXb0bYvrhkibbWAURawIvcR09l5sgRsnFAAwGXr1F1TPZqBL9KMzB0QTlwmokKkd3ci5GqsUUWE1BzK80l6Rg==}
+    engines: {node: '>=10.4.0', pnpm: ^7.1.6}
+    dependencies:
+      tslib: 2.4.0
+    dev: false
+
+  /@flemist/pairing-heap/0.0.2:
+    resolution: {integrity: sha512-0lezz8G0gxsNQz5q7fYKaSJmVo/BFeUBKVCWAKgbBGdv15hBzwgV6xWfl1Xy8m0oJkhsiGk0u9A5veZiS0BzsQ==}
     engines: {node: '>=10.4.0', pnpm: ^7.1.6}
     dependencies:
       tslib: 2.4.0
