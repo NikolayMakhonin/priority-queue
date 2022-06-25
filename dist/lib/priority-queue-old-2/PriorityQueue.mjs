@@ -17,57 +17,33 @@ class PriorityQueue {
         });
     }
     run(func, priority, abortSignal) {
-        const task = this.runTask(func, priority, abortSignal);
-        task.setReadyToRun(true);
-        return task.result;
-    }
-    runTask(func, priority, abortSignal) {
         const promise = new CustomPromise(abortSignal);
-        const item = {
+        this._queue.add({
             priority: priorityCreate(nextOrder++, priority),
             func,
             abortSignal,
             resolve: promise.resolve,
             reject: promise.reject,
-            readyToRun: void 0,
-        };
-        this._queue.add(item);
-        const _this = this;
-        function setReadyToRun(readyToRun) {
-            item.readyToRun = readyToRun;
-            if (readyToRun) {
-                void _this._process();
-            }
-        }
-        return {
-            result: promise.promise,
-            setReadyToRun,
-        };
+        });
+        void this._process();
+        return promise.promise;
     }
     _process() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this._inProcess) {
+            if (this._processRunning) {
                 return;
             }
-            this._inProcess = true;
+            this._processRunning = true;
             const queue = this._queue;
             while (true) {
                 // eslint-disable-next-line @typescript-eslint/await-thenable
                 yield 0;
                 // void Promise.resolve().then(emptyFunc).then(next)
-                let nextNode;
-                for (const node of queue.nodes()) {
-                    if (node.item.readyToRun) {
-                        nextNode = node;
-                        break;
-                    }
-                }
-                if (!nextNode) {
-                    this._inProcess = false;
+                if (queue.isEmpty) {
+                    this._processRunning = false;
                     break;
                 }
-                const item = nextNode.item;
-                queue.delete(nextNode);
+                const item = queue.deleteMin();
                 if (item.abortSignal && item.abortSignal.aborted) {
                     item.reject(item.abortSignal.reason);
                 }
