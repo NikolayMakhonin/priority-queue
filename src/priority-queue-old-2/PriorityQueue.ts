@@ -42,8 +42,8 @@ export class PriorityQueue implements IPriorityQueue {
       priority: priorityCreate(nextOrder++, priority),
       func,
       abortSignal,
-      resolve: promise.resolve,
-      reject: promise.reject,
+      resolve : promise.resolve,
+      reject  : promise.reject,
     })
 
     void this._process()
