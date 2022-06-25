@@ -1,16 +1,15 @@
-import {IPriorityQueue, IPriorityQueueTask, PromiseOrValue, Task} from './contracts'
+import {IPriorityQueue, PromiseOrValue} from './contracts'
 import {PairingHeap} from '@flemist/pairing-heap'
 import {CustomPromise} from '@flemist/async-utils'
 import {Priority, priorityCompare, priorityCreate} from 'src/priority'
 import {IAbortSignalFast} from '@flemist/abort-controller-fast'
 
 type TQueueItem<T> = {
-  func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
+  func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>
   abortSignal: IAbortSignalFast
   priority: Priority
   resolve: (value: T) => void
   reject: (error: Error) => void
-  readyToRun: boolean
 }
 
 // const emptyFunc = function emptyFunc(o) {
@@ -23,7 +22,7 @@ export function queueItemLessThan(o1: TQueueItem<any>, o2: TQueueItem<any>): boo
 
 let nextOrder: number = 1
 
-export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
+export class PriorityQueue implements IPriorityQueue {
   private readonly _queue: PairingHeap<TQueueItem<any>>
 
   constructor() {
@@ -37,50 +36,27 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
     priority?: Priority,
     abortSignal?: IAbortSignalFast,
   ): Promise<T> {
-    const task = this.enqueue(func, priority, abortSignal)
-    task.setReadyToRun(true)
-    return task.result
-  }
-
-  enqueue<T>(
-    func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
-    priority?: Priority,
-    abortSignal?: IAbortSignalFast,
-  ): Task<T> {
     const promise = new CustomPromise<T>(abortSignal)
 
-    const item: TQueueItem<T> = {
-      priority  : priorityCreate(nextOrder++, priority),
+    this._queue.add({
+      priority: priorityCreate(nextOrder++, priority),
       func,
       abortSignal,
-      resolve   : promise.resolve,
-      reject    : promise.reject,
-      readyToRun: void 0,
-    }
-    
-    this._queue.add(item)
+      resolve: promise.resolve,
+      reject: promise.reject,
+    })
 
-    const _this = this
+    void this._process()
 
-    function setReadyToRun(readyToRun: boolean) {
-      item.readyToRun = readyToRun
-      if (readyToRun) {
-        void _this._process()
-      }
-    }
-
-    return {
-      result: promise.promise,
-      setReadyToRun,
-    }
+    return promise.promise
   }
 
-  _inProcess: boolean
+  _processRunning: boolean
   private async _process() {
-    if (this._inProcess) {
+    if (this._processRunning) {
       return
     }
-    this._inProcess = true
+    this._processRunning = true
 
     const queue = this._queue
 
@@ -90,17 +66,12 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
 
       // void Promise.resolve().then(emptyFunc).then(next)
 
-      let node = queue.getMinNode()
-      while (node && !node.item.readyToRun) {
-        node = node.next
-      }
-      if (!node) {
-        this._inProcess = false
+      if (queue.isEmpty) {
+        this._processRunning = false
         break
       }
-      const item = node.item
-      queue.delete(node)
 
+      const item = queue.deleteMin()
       if (item.abortSignal && item.abortSignal.aborted) {
         item.reject(item.abortSignal.reason)
       }

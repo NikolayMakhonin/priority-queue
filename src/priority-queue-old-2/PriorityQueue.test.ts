@@ -5,10 +5,8 @@ import {IAbortSignalFast, IAbortControllerFast, AbortControllerFast, AbortError}
 import {ITimeController, TimeControllerMock} from '@flemist/time-controller'
 import {delay} from '@flemist/async-utils'
 
-describe('priority-queue > PriorityQueue', function _describe() {
+xdescribe('priority-queue > PriorityQueue', function _describe() {
   it('base', async function () {
-    this.timeout(30000)
-
     const queue = new PriorityQueue()
     const log = []
 
@@ -59,7 +57,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
     abortTime: number,
     abortController: IAbortControllerFast
     order: number,
-    useReadyToRun: boolean,
   }
 
   function createFunc(
@@ -97,22 +94,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
     
     function enqueue() {
       results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
-      let promise: Promise<string>
-      if (funcParams.useReadyToRun) {
-        const task = priorityQueue.enqueue(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
-        promise = task.result
-        if (funcParams.startTime > 0) {
-          timeController.setTimeout(() => {
-            task.setReadyToRun(true)
-          }, funcParams.startTime)
-        }
-        else {
-          task.setReadyToRun(true)
-        }
-      }
-      else {
-        promise = priorityQueue.run(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
-      }
+      const promise = priorityQueue.run(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
       assert.ok(typeof promise.then === 'function')
       promise
         .then(
@@ -135,12 +117,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
         funcParams.abortController.abort(funcParams.name)
       }, funcParams.startTime + funcParams.abortTime)
     }
-    if (funcParams.useReadyToRun) {
-      timeController.setTimeout(enqueue, 0)
-    }
-    else {
-      timeController.setTimeout(enqueue, funcParams.startTime)
-    }
+    timeController.setTimeout(enqueue, funcParams.startTime)
   }
 
   function awaitTime(timeController: TimeControllerMock, time: number, awaitsPerTime: number) {
@@ -267,8 +244,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
   }
 
   const testVariants = createTestVariants(async function testVariant({
-    useReadyToRun,
-
     abortTime1,
     abortTime2,
     abortTime3,
@@ -285,8 +260,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
     delayStart2,
     delayStart3,
   }: {
-    useReadyToRun: boolean,
-
     abortTime1: number,
     abortTime2: number,
     abortTime3: number,
@@ -314,7 +287,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
         abortTime      : abortTime1,
         abortController: abortTime1 == null ? null :new AbortControllerFast(),
         order          : order1,
-        useReadyToRun,
       },
       {
         name           : 'func2',
@@ -323,7 +295,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
         abortTime      : abortTime2,
         abortController: abortTime2 == null ? null :new AbortControllerFast(),
         order          : order2,
-        useReadyToRun,
       },
       {
         name           : 'func3',
@@ -332,7 +303,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
         abortTime      : abortTime3,
         abortController: abortTime3 == null ? null : new AbortControllerFast(),
         order          : order3,
-        useReadyToRun,
       },
     ]
     const len = funcsParams.length
@@ -382,19 +352,18 @@ describe('priority-queue > PriorityQueue', function _describe() {
     this.timeout(300000)
 
     await testVariants({
-      useReadyToRun: [false],
-      abortTime1   : [null],
-      abortTime2   : [null],
-      abortTime3   : [null],
-      order1       : [0],
-      order2       : [0],
-      order3       : [0],
-      delayRun1    : [2],
-      delayRun2    : [2],
-      delayRun3    : [2],
-      delayStart1  : [2],
-      delayStart2  : [2],
-      delayStart3  : [2],
+      abortTime1 : [null],
+      abortTime2 : [null],
+      abortTime3 : [null],
+      order1     : [0],
+      order2     : [0],
+      order3     : [0],
+      delayRun1  : [2],
+      delayRun2  : [2],
+      delayRun3  : [2],
+      delayStart1: [2],
+      delayStart2: [2],
+      delayStart3: [2],
     })()
   })
 
@@ -402,19 +371,18 @@ describe('priority-queue > PriorityQueue', function _describe() {
     this.timeout(300000)
 
     await testVariants({
-      useReadyToRun: [false],
-      abortTime1   : [null],
-      abortTime2   : [null],
-      abortTime3   : [0],
-      order1       : [0],
-      order2       : [0],
-      order3       : [0],
-      delayRun1    : [null],
-      delayRun2    : [1],
-      delayRun3    : [null],
-      delayStart1  : [0],
-      delayStart2  : [0],
-      delayStart3  : [1],
+      abortTime1 : [null],
+      abortTime2 : [null],
+      abortTime3 : [0],
+      order1     : [0],
+      order2     : [0],
+      order3     : [0],
+      delayRun1  : [null],
+      delayRun2  : [1],
+      delayRun3  : [null],
+      delayStart1: [0],
+      delayStart2: [0],
+      delayStart3: [1],
     })()
   })
   
@@ -422,19 +390,18 @@ describe('priority-queue > PriorityQueue', function _describe() {
     this.timeout(300000)
 
     await testVariants({
-      useReadyToRun: [false],
-      abortTime1   : [null],
-      abortTime2   : [null],
-      abortTime3   : [0],
-      order1       : [0],
-      order2       : [0],
-      order3       : [0],
-      delayRun1    : [null],
-      delayRun2    : [null],
-      delayRun3    : [null],
-      delayStart1  : [0],
-      delayStart2  : [0],
-      delayStart3  : [0],
+      abortTime1 : [null],
+      abortTime2 : [null],
+      abortTime3 : [0],
+      order1     : [0],
+      order2     : [0],
+      order3     : [0],
+      delayRun1  : [null],
+      delayRun2  : [null],
+      delayRun3  : [null],
+      delayStart1: [0],
+      delayStart2: [0],
+      delayStart3: [0],
     })()
   })
 
@@ -442,19 +409,18 @@ describe('priority-queue > PriorityQueue', function _describe() {
     this.timeout(300000)
 
     await testVariants({
-      useReadyToRun: [false],
-      abortTime1   : [null],
-      abortTime2   : [null],
-      abortTime3   : [0],
-      order1       : [0],
-      order2       : [0],
-      order3       : [0],
-      delayRun1    : [null],
-      delayRun2    : [null],
-      delayRun3    : [null],
-      delayStart1  : [0],
-      delayStart2  : [0],
-      delayStart3  : [0],
+      abortTime1 : [null],
+      abortTime2 : [null],
+      abortTime3 : [0],
+      order1     : [0],
+      order2     : [0],
+      order3     : [0],
+      delayRun1  : [null],
+      delayRun2  : [null],
+      delayRun3  : [null],
+      delayStart1: [0],
+      delayStart2: [0],
+      delayStart3: [0],
     })()
   })
   
@@ -462,8 +428,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
     this.timeout(1200000)
 
     await testVariants({
-      useReadyToRun: [false],
-
       abortTime1: [0, 1],
       abortTime2: [0, 1],
       abortTime3: [0, 2],
@@ -488,8 +452,6 @@ describe('priority-queue > PriorityQueue', function _describe() {
     const isBrowser = typeof window !== 'undefined'
 
     await testVariants({
-      useReadyToRun: [false, true],
-
       abortTime1: isBrowser ? [null, 2] : [null, 0, 1, 2],
       abortTime2: isBrowser ? [null, 1] : [null, 0, 1, 2],
       abortTime3: isBrowser ? [null, 0] : [null, 0, 1, 2],

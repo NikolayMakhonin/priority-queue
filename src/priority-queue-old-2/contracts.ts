@@ -5,23 +5,10 @@ export type PromiseOrValue<T> = T | Promise<T>
 
 export type TCompare<T> = (o1: T, o2: T) => number
 
-export type Task<T> = {
-  result: Promise<T>,
-  setReadyToRun: (readyToRun: boolean) => void,
-}
-
 export interface IPriorityQueue {
   run<T>(
     func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
     priority?: Priority,
     abortSignal?: IAbortSignalFast,
   ): Promise<T>;
-}
-
-export interface IPriorityQueueTask {
-  enqueue<T>(
-    func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
-    priority?: Priority,
-    abortSignal?: IAbortSignalFast,
-  ): Task<T>;
 }
