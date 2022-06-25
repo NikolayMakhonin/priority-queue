@@ -100,7 +100,7 @@
   "dependencies": {
     "@flemist/abort-controller-fast": "^0.0.5",
     "@flemist/async-utils": "^0.0.1",
-    "@flemist/pairing-heap": "^0.0.2",
+    "@flemist/pairing-heap": "^0.0.7",
     "@flemist/time-controller": "^0.0.1",
     "tslib": "^2.4.0"
   }

@@ -59,7 +59,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
     abortTime: number,
     abortController: IAbortControllerFast
     order: number,
-    useReadyToRun: boolean,
+    readyToRunTime: number,
   }
 
   function createFunc(
@@ -96,19 +96,20 @@ describe('priority-queue > PriorityQueue', function _describe() {
     const func = createFunc(funcParams.name, results, funcParams.runTime, timeController, timeStart)
     
     function enqueue() {
+      results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
+
       let promise: Promise<string>
-      if (funcParams.useReadyToRun) {
+      if (funcParams.readyToRunTime) {
         const task = priorityQueue.enqueue(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
         promise = task.result
         timeController.setTimeout(() => {
-          results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
           task.setReadyToRun(true)
-        }, funcParams.startTime)
+        }, funcParams.readyToRunTime)
       }
       else {
-        results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
         promise = priorityQueue.run(func, priorityCreate(funcParams.order), funcParams.abortController?.signal)
       }
+
       assert.ok(typeof promise.then === 'function')
       promise
         .then(
@@ -131,12 +132,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
         funcParams.abortController.abort(funcParams.name)
       }, funcParams.startTime + funcParams.abortTime)
     }
-    if (funcParams.useReadyToRun) {
-      enqueue()
-    }
-    else {
-      timeController.setTimeout(enqueue, funcParams.startTime)
-    }
+    timeController.setTimeout(enqueue, funcParams.startTime)
   }
 
   function awaitTime(timeController: TimeControllerMock, time: number, awaitsPerTime: number) {
@@ -273,13 +269,13 @@ describe('priority-queue > PriorityQueue', function _describe() {
     order2,
     order3,
 
-    delayRun1,
-    delayRun2,
-    delayRun3,
+    runTime1,
+    runTime2,
+    runTime3,
 
-    delayStart1,
-    delayStart2,
-    delayStart3,
+    startTime1,
+    startTime2,
+    startTime3,
   }: {
     useReadyToRun: boolean,
 
@@ -291,13 +287,13 @@ describe('priority-queue > PriorityQueue', function _describe() {
     order2: number,
     order3: number,
 
-    delayRun1: number,
-    delayRun2: number,
-    delayRun3: number,
+    runTime1: number,
+    runTime2: number,
+    runTime3: number,
 
-    delayStart1: number,
-    delayStart2: number,
-    delayStart3: number,
+    startTime1: number,
+    startTime2: number,
+    startTime3: number,
   }) {
     const results = []
     const timeController = new TimeControllerMock()
@@ -305,30 +301,30 @@ describe('priority-queue > PriorityQueue', function _describe() {
     const funcsParams: FuncParams[] = [
       {
         name           : 'func1',
-        startTime      : delayStart1,
-        runTime        : delayRun1,
+        startTime      : useReadyToRun ? 0 : startTime1,
+        runTime        : runTime1,
         abortTime      : abortTime1,
         abortController: abortTime1 == null ? null :new AbortControllerFast(),
         order          : order1,
-        useReadyToRun,
+        readyToRunTime : useReadyToRun ? startTime1 : 0,
       },
       {
         name           : 'func2',
-        startTime      : delayStart2,
-        runTime        : delayRun2,
+        startTime      : useReadyToRun ? 0 : startTime2,
+        runTime        : runTime2,
         abortTime      : abortTime2,
         abortController: abortTime2 == null ? null :new AbortControllerFast(),
         order          : order2,
-        useReadyToRun,
+        readyToRunTime : useReadyToRun ? startTime2 : 0,
       },
       {
         name           : 'func3',
-        startTime      : delayStart3,
-        runTime        : delayRun3,
+        startTime      : useReadyToRun ? 0 : startTime3,
+        runTime        : runTime3,
         abortTime      : abortTime3,
         abortController: abortTime3 == null ? null : new AbortControllerFast(),
         order          : order3,
-        useReadyToRun,
+        readyToRunTime : useReadyToRun ? startTime3 : 0,
       },
     ]
     const len = funcsParams.length
@@ -385,12 +381,12 @@ describe('priority-queue > PriorityQueue', function _describe() {
       order1       : [0],
       order2       : [0],
       order3       : [0],
-      delayRun1    : [2],
-      delayRun2    : [2],
-      delayRun3    : [2],
-      delayStart1  : [2],
-      delayStart2  : [2],
-      delayStart3  : [2],
+      runTime1    : [2],
+      runTime2    : [2],
+      runTime3    : [2],
+      startTime1  : [2],
+      startTime2  : [2],
+      startTime3  : [2],
     })()
   })
 
@@ -405,12 +401,12 @@ describe('priority-queue > PriorityQueue', function _describe() {
       order1       : [0],
       order2       : [0],
       order3       : [0],
-      delayRun1    : [null],
-      delayRun2    : [1],
-      delayRun3    : [null],
-      delayStart1  : [0],
-      delayStart2  : [0],
-      delayStart3  : [1],
+      runTime1    : [null],
+      runTime2    : [1],
+      runTime3    : [null],
+      startTime1  : [0],
+      startTime2  : [0],
+      startTime3  : [1],
     })()
   })
   
@@ -425,12 +421,12 @@ describe('priority-queue > PriorityQueue', function _describe() {
       order1       : [0],
       order2       : [0],
       order3       : [0],
-      delayRun1    : [null],
-      delayRun2    : [null],
-      delayRun3    : [null],
-      delayStart1  : [0],
-      delayStart2  : [0],
-      delayStart3  : [0],
+      runTime1    : [null],
+      runTime2    : [null],
+      runTime3    : [null],
+      startTime1  : [0],
+      startTime2  : [0],
+      startTime3  : [0],
     })()
   })
 
@@ -445,12 +441,12 @@ describe('priority-queue > PriorityQueue', function _describe() {
       order1       : [0],
       order2       : [0],
       order3       : [0],
-      delayRun1    : [null],
-      delayRun2    : [null],
-      delayRun3    : [null],
-      delayStart1  : [0],
-      delayStart2  : [0],
-      delayStart3  : [0],
+      runTime1    : [null],
+      runTime2    : [null],
+      runTime3    : [null],
+      startTime1  : [0],
+      startTime2  : [0],
+      startTime3  : [0],
     })()
   })
   
@@ -468,13 +464,13 @@ describe('priority-queue > PriorityQueue', function _describe() {
       order2: [0, 1, 2],
       order3: [0, 1, 2],
 
-      delayRun1: [null, 1, 2],
-      delayRun2: [null, 1, 2],
-      delayRun3: [null, 1, 2],
+      runTime1: [null, 1, 2],
+      runTime2: [null, 1, 2],
+      runTime3: [null, 1, 2],
 
-      delayStart1: [0, 1, 2],
-      delayStart2: [0, 1, 2],
-      delayStart3: [0, 1, 2],
+      startTime1: [0, 1, 2],
+      startTime2: [0, 1, 2],
+      startTime3: [0, 1, 2],
     })()
   })
 
@@ -494,13 +490,13 @@ describe('priority-queue > PriorityQueue', function _describe() {
       order2: [0, 1, 2],
       order3: [0, 1, 2],
 
-      delayRun1: [null, 1, 2],
-      delayRun2: [null, 1, 2],
-      delayRun3: [null, 1, 2],
+      runTime1: [null, 1, 2],
+      runTime2: [null, 1, 2],
+      runTime3: [null, 1, 2],
 
-      delayStart1: isBrowser ? [1, 2] : [0, 1, 2],
-      delayStart2: isBrowser ? [0, 2] : [0, 1, 2],
-      delayStart3: isBrowser ? [0, 1] : [0, 1, 2],
+      startTime1: isBrowser ? [1, 2] : [0, 1, 2],
+      startTime2: isBrowser ? [0, 2] : [0, 1, 2],
+      startTime3: isBrowser ? [0, 1] : [0, 1, 2],
     })()
   })
 })

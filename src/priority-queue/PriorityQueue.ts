@@ -1,5 +1,5 @@
 import {IPriorityQueue, IPriorityQueueTask, PromiseOrValue, Task} from './contracts'
-import {PairingHeap} from '@flemist/pairing-heap'
+import {PairingHeap, PairingNode} from '@flemist/pairing-heap'
 import {CustomPromise} from '@flemist/async-utils'
 import {Priority, priorityCompare, priorityCreate} from 'src/priority'
 import {IAbortSignalFast} from '@flemist/abort-controller-fast'
@@ -90,16 +90,21 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
 
       // void Promise.resolve().then(emptyFunc).then(next)
 
-      let node = queue.getMinNode()
-      while (node && !node.item.readyToRun) {
-        node = node.next
+      let nextNode: PairingNode<TQueueItem<any>>
+      for (const node of queue.nodes()) {
+        if (node.item.readyToRun) {
+          nextNode = node
+          break
+        }
       }
-      if (!node) {
+
+      if (!nextNode) {
         this._inProcess = false
         break
       }
-      const item = node.item
-      queue.delete(node)
+
+      const item = nextNode.item
+      queue.delete(nextNode)
 
       if (item.abortSignal && item.abortSignal.aborted) {
         item.reject(item.abortSignal.reason)
