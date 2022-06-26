@@ -21,11 +21,12 @@ class PriorityQueue {
         });
     }
     run(func, priority, abortSignal) {
-        const task = this.runTask(func, priority, abortSignal);
-        task.setReadyToRun(true);
-        return task.result;
+        return this._run(false, func, priority, abortSignal);
     }
     runTask(func, priority, abortSignal) {
+        return this._run(true, func, priority, abortSignal);
+    }
+    _run(taskMode, func, priority, abortSignal) {
         const promise = new asyncUtils.CustomPromise(abortSignal);
         const item = {
             priority: priority_Priority.priorityCreate(nextOrder++, priority),
@@ -33,20 +34,23 @@ class PriorityQueue {
             abortSignal,
             resolve: promise.resolve,
             reject: promise.reject,
-            readyToRun: void 0,
+            readyToRun: !taskMode,
         };
         this._queue.add(item);
-        const _this = this;
-        function setReadyToRun(readyToRun) {
-            item.readyToRun = readyToRun;
-            if (readyToRun) {
-                void _this._process();
-            }
+        if (taskMode) {
+            const _this = this;
+            return {
+                result: promise.promise,
+                setReadyToRun(readyToRun) {
+                    item.readyToRun = readyToRun;
+                    if (readyToRun) {
+                        void _this._process();
+                    }
+                },
+            };
         }
-        return {
-            result: promise.promise,
-            setReadyToRun,
-        };
+        void this._process();
+        return promise.promise;
     }
     _process() {
         return tslib.__awaiter(this, void 0, void 0, function* () {
@@ -59,19 +63,29 @@ class PriorityQueue {
                 // eslint-disable-next-line @typescript-eslint/await-thenable
                 yield 0;
                 // void Promise.resolve().then(emptyFunc).then(next)
-                let nextNode;
-                for (const node of queue.nodes()) {
-                    if (node.item.readyToRun) {
-                        nextNode = node;
-                        break;
-                    }
-                }
-                if (!nextNode) {
+                if (queue.isEmpty) {
                     this._inProcess = false;
                     break;
                 }
-                const item = nextNode.item;
-                queue.delete(nextNode);
+                let item = queue.getMin();
+                if (item.readyToRun) {
+                    queue.deleteMin();
+                }
+                else {
+                    let nextNode;
+                    for (const node of queue.nodes()) {
+                        if (node.item.readyToRun) {
+                            nextNode = node;
+                            break;
+                        }
+                    }
+                    if (!nextNode) {
+                        this._inProcess = false;
+                        break;
+                    }
+                    item = nextNode.item;
+                    queue.delete(nextNode);
+                }
                 if (item.abortSignal && item.abortSignal.aborted) {
                     item.reject(item.abortSignal.reason);
                 }

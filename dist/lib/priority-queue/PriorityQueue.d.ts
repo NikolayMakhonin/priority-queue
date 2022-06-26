@@ -15,6 +15,7 @@ export declare class PriorityQueue implements IPriorityQueue, IPriorityQueueTask
     constructor();
     run<T>(func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>, priority?: Priority, abortSignal?: IAbortSignalFast): Promise<T>;
     runTask<T>(func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>, priority?: Priority, abortSignal?: IAbortSignalFast): Task<T>;
+    private _run;
     _inProcess: boolean;
     private _process;
 }

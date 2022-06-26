@@ -96,7 +96,7 @@ return null!=t&&"object"==typeof t&&"function"==typeof t.then
 ;n._resolve(r)}catch(t){n._reject(t)}}
 function f(t,e,n){e||n._reject(t);try{const r=e(t)
 ;n._resolve(r)}catch(t){n._reject(t)}}
-const d=function(){};class _{constructor(t){
+const _=function(){};class d{constructor(t){
 this.status="pending",this.value=void 0,
 this.reason=void 0,this._handlers=null
 ;const e=this._resolve,n=this._reject,r=this._resolveAsync,i=this._rejectAsync,s=this
@@ -118,19 +118,19 @@ this.status="rejected",h(t)?t.then(this._rejectAsync,this._rejectAsync):this._re
 }_rejectSync(t){const e=this._handlers
 ;if(this.reason=t,null!=e){this._handlers=null
 ;for(let n=0,r=e.length;n<r;n++){const[,r,i]=e[n]
-;f(t,r,i)}}}then(t,e){const n=new _(d)
+;f(t,r,i)}}}then(t,e){const n=new d(_)
 ;return"pending"===this.status?(null==this._handlers&&(this._handlers=[]),
 this._handlers.push([t,e,n])):"fulfilled"===this.status?a(this.value,t,n):f(this.reason,e,n),
 n}catch(t){return this.then(void 0,t)}finally(t){
 const e=t&&function(e){return t(),e
 },n=t&&function(e){throw t(),e}
 ;return this.then(e,n)}static resolve(t){
-const e=new _(d);return e._resolve(t),e}
-static reject(t){const e=new _(d)
+const e=new d(_);return e._resolve(t),e}
+static reject(t){const e=new d(_)
 ;return e._reject(t),e}get[Symbol.toStringTag](){
-return"Promise"}}const v=function(){};class p{
+return"Promise"}}const p=function(){};class v{
 constructor(t){
-if(t&&t.aborted)this.promise=_.reject(t.reason),this.resolve=v,this.reject=v;else{
+if(t&&t.aborted)this.promise=d.reject(t.reason),this.resolve=p,this.reject=p;else{
 let e,n
 ;if(this.promise=new Promise((function(t,r){
 e=t,n=function(e){!function(t,e){t(function(t){
@@ -143,23 +143,27 @@ function y(t,e){return r(t.priority,e.priority)<0}
 var b=1,j=function(){function t(){
 this._queue=new l({lessThanFunc:y})}
 return t.prototype.run=function(t,e,n){
-var r=this.runTask(t,e,n)
-;return r.setReadyToRun(!0),r.result
-},t.prototype.runTask=function(t,e,r){
-var i=new p(r),s={priority:n(b++,e),func:t,
-abortSignal:r,resolve:i.resolve,reject:i.reject,
-readyToRun:void 0};this._queue.add(s);var o=this
-;return{result:i.promise,
+return this._run(!1,t,e,n)
+},t.prototype.runTask=function(t,e,n){
+return this._run(!0,t,e,n)
+},t.prototype._run=function(t,e,r,i){
+var s=new v(i),o={priority:n(b++,r),func:e,
+abortSignal:i,resolve:s.resolve,reject:s.reject,
+readyToRun:!t};if(this._queue.add(o),t){var l=this
+;return{result:s.promise,
 setReadyToRun:function(t){
-s.readyToRun=t,t&&o._process()}}
+o.readyToRun=t,t&&l._process()}}}
+return this._process(),s.promise
 },t.prototype._process=function(){
 return i(this,void 0,void 0,(function(){
 var t,e,n,r,i,o,l,c,u,h
 ;return s(this,(function(s){switch(s.label){
 case 0:if(this._inProcess)return[2]
 ;this._inProcess=!0,t=this._queue,s.label=1
-;case 1:return[4,0];case 2:s.sent(),e=void 0;try{
-for(u=void 0,n=function(t){
+;case 1:return[4,0];case 2:
+if(s.sent(),t.isEmpty)return this._inProcess=!1,[3,8]
+;if((e=t.getMin()).readyToRun)t.deleteMin();else{
+n=void 0;try{for(u=void 0,r=function(t){
 var e="function"==typeof Symbol&&Symbol.iterator,n=e&&t[e],r=0
 ;if(n)return n.call(t)
 ;if(t&&"number"==typeof t.length)return{
@@ -168,16 +172,18 @@ return t&&r>=t.length&&(t=void 0),{
 value:t&&t[r++],done:!t}}}
 ;throw new TypeError(e?"Object is not iterable.":"Symbol.iterator is not defined.")
 }(t.nodes()),
-r=n.next();!r.done;r=n.next())if((i=r.value).item.readyToRun){
-e=i;break}}catch(t){u={error:t}}finally{try{
-r&&!r.done&&(h=n.return)&&h.call(n)}finally{
+i=r.next();!i.done;i=r.next())if((o=i.value).item.readyToRun){
+n=o;break}}catch(t){u={error:t}}finally{try{
+i&&!i.done&&(h=r.return)&&h.call(r)}finally{
 if(u)throw u.error}}
-return e?(o=e.item,t.delete(e),o.abortSignal&&o.abortSignal.aborted?(o.reject(o.abortSignal.reason),
-[3,7]):[3,3]):(this._inProcess=!1,[3,8]);case 3:
-return s.trys.push([3,6,,7]),(l=o.func&&o.func(o.abortSignal))&&"function"==typeof l.then?[4,l]:[3,5]
+if(!n)return this._inProcess=!1,[3,8]
+;e=n.item,t.delete(n)}
+return e.abortSignal&&e.abortSignal.aborted?(e.reject(e.abortSignal.reason),
+[3,7]):[3,3];case 3:
+return s.trys.push([3,6,,7]),(l=e.func&&e.func(e.abortSignal))&&"function"==typeof l.then?[4,l]:[3,5]
 ;case 4:l=s.sent(),s.label=5;case 5:
-return o.resolve(l),[3,7];case 6:
-return c=s.sent(),o.reject(c),[3,7];case 7:
+return e.resolve(l),[3,7];case 6:
+return c=s.sent(),e.reject(c),[3,7];case 7:
 return[3,1];case 8:return[2]}}))}))},t}()
 ;t.Priority=e,t.PriorityQueue=j,t.priorityCompare=r,
 t.priorityCreate=n,Object.defineProperty(t,"__esModule",{
