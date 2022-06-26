@@ -37,9 +37,7 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
     priority?: Priority,
     abortSignal?: IAbortSignalFast,
   ): Promise<T> {
-    const task = this.runTask(func, priority, abortSignal)
-    task.setReadyToRun(true)
-    return task.result
+    return this._run(false, func, priority, abortSignal) as any
   }
 
   runTask<T>(
@@ -47,6 +45,15 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
     priority?: Priority,
     abortSignal?: IAbortSignalFast,
   ): Task<T> {
+    return this._run(true, func, priority, abortSignal) as any
+  }
+
+  private _run<T>(
+    taskMode: true|false,
+    func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>,
+    priority?: Priority,
+    abortSignal?: IAbortSignalFast,
+  ): Task<T> | Promise<T> {
     const promise = new CustomPromise<T>(abortSignal)
 
     const item: TQueueItem<T> = {
@@ -55,24 +62,27 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
       abortSignal,
       resolve   : promise.resolve,
       reject    : promise.reject,
-      readyToRun: void 0,
+      readyToRun: !taskMode,
     }
     
     this._queue.add(item)
 
-    const _this = this
+    if (taskMode) {
+      const _this = this
 
-    function setReadyToRun(readyToRun: boolean) {
-      item.readyToRun = readyToRun
-      if (readyToRun) {
-        void _this._process()
+      return {
+        result: promise.promise,
+        setReadyToRun(readyToRun: boolean) {
+          item.readyToRun = readyToRun
+          if (readyToRun) {
+            void _this._process()
+          }
+        },
       }
     }
 
-    return {
-      result: promise.promise,
-      setReadyToRun,
-    }
+    void this._process()
+    return promise.promise
   }
 
   _inProcess: boolean
@@ -90,21 +100,32 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
 
       // void Promise.resolve().then(emptyFunc).then(next)
 
-      let nextNode: PairingNode<TQueueItem<any>>
-      for (const node of queue.nodes()) {
-        if (node.item.readyToRun) {
-          nextNode = node
-          break
-        }
-      }
-
-      if (!nextNode) {
+      if (queue.isEmpty) {
         this._inProcess = false
         break
       }
 
-      const item = nextNode.item
-      queue.delete(nextNode)
+      let item = queue.getMin()
+      if (item.readyToRun) {
+        queue.deleteMin()
+      }
+      else {
+        let nextNode: PairingNode<TQueueItem<any>>
+        for (const node of queue.nodes()) {
+          if (node.item.readyToRun) {
+            nextNode = node
+            break
+          }
+        }
+
+        if (!nextNode) {
+          this._inProcess = false
+          break
+        }
+
+        item = nextNode.item
+        queue.delete(nextNode)
+      }
 
       if (item.abortSignal && item.abortSignal.aborted) {
         item.reject(item.abortSignal.reason)
