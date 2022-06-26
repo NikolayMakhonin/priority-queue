@@ -74,24 +74,23 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
         result: promise.promise,
         setReadyToRun(readyToRun: boolean) {
           item.readyToRun = readyToRun
-          if (readyToRun) {
+          if (readyToRun && !this._inProcess) {
+            this._inProcess = true
             void _this._process()
           }
         },
       }
     }
 
-    void this._process()
+    if (!this._inProcess) {
+      this._inProcess = true
+      void this._process()
+    }
     return promise.promise
   }
 
   _inProcess: boolean
   private async _process() {
-    if (this._inProcess) {
-      return
-    }
-    this._inProcess = true
-
     const queue = this._queue
 
     while (true) {
