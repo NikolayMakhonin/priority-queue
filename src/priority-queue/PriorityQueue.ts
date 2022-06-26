@@ -75,7 +75,7 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
         setReadyToRun(readyToRun: boolean) {
           item.readyToRun = readyToRun
           if (readyToRun && !_this._inProcess) {
-            this._inProcess = true
+            _this._inProcess = true
             void _this._process()
           }
         },
@@ -91,11 +91,6 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
 
   _inProcess: boolean
   private async _process() {
-    if (this._inProcess) {
-      return
-    }
-    this._inProcess = true
-
     const queue = this._queue
 
     while (true) {

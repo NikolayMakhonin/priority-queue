@@ -152,15 +152,15 @@ abortSignal:i,resolve:s.resolve,reject:s.reject,
 readyToRun:!t};if(this._queue.add(o),t){var l=this
 ;return{result:s.promise,
 setReadyToRun:function(t){
-o.readyToRun=t,t&&l._process()}}}
-return this._process(),s.promise
+o.readyToRun=t,t&&!l._inProcess&&(l._inProcess=!0,l._process())
+}}}
+return this._inProcess||(this._inProcess=!0,this._process()),s.promise
 },t.prototype._process=function(){
 return i(this,void 0,void 0,(function(){
 var t,e,n,r,i,o,l,c,u,h
 ;return s(this,(function(s){switch(s.label){
-case 0:if(this._inProcess)return[2]
-;this._inProcess=!0,t=this._queue,s.label=1
-;case 1:return[4,0];case 2:
+case 0:t=this._queue,s.label=1;case 1:return[4,0]
+;case 2:
 if(s.sent(),t.isEmpty)return this._inProcess=!1,[3,8]
 ;if((e=t.getMin()).readyToRun)t.deleteMin();else{
 n=void 0;try{for(u=void 0,r=function(t){

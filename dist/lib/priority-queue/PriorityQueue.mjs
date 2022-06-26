@@ -39,21 +39,21 @@ class PriorityQueue {
                 result: promise.promise,
                 setReadyToRun(readyToRun) {
                     item.readyToRun = readyToRun;
-                    if (readyToRun) {
+                    if (readyToRun && !_this._inProcess) {
+                        _this._inProcess = true;
                         void _this._process();
                     }
                 },
             };
         }
-        void this._process();
+        if (!this._inProcess) {
+            this._inProcess = true;
+            void this._process();
+        }
         return promise.promise;
     }
     _process() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this._inProcess) {
-                return;
-            }
-            this._inProcess = true;
             const queue = this._queue;
             while (true) {
                 // eslint-disable-next-line @typescript-eslint/await-thenable
