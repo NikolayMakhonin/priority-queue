@@ -229,8 +229,9 @@ return i.trys.push([3,6,,7]),(l=e.func&&e.func(e.abortSignal))&&"function"==type
 ;case 4:l=i.sent(),i.label=5;case 5:
 return e.resolve(l),[3,7];case 6:
 return c=i.sent(),e.reject(c),[3,7];case 7:
-return[3,1];case 8:return[2]}}))}))},t}(),O=new M
-;t.Priority=e,t.PriorityQueue=M,
-t.priorityCompare=n,t.priorityCreate=r,t.priorityQueueDefault=O,
-Object.defineProperty(t,"__esModule",{value:!0})
-}({});
+return[3,1];case 8:return[2]}}))}))},t}()
+;t.Priority=e,t.PriorityQueue=M,t.createAwaitConcurrency=function(){
+var t=new M;return function(e,r){
+return t.run(void 0,e,r)}
+},t.priorityCompare=n,t.priorityCreate=r,Object.defineProperty(t,"__esModule",{
+value:!0})}({});
