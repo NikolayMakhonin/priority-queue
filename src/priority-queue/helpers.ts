@@ -11,3 +11,5 @@ export function createAwaitPriority(): AwaitPriority {
     return priorityQueue.run(void 0, priority, abortSignal)
   }
 }
+
+export const awaitPriorityDefault = createAwaitPriority()
