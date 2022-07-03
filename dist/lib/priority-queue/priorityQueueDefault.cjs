@@ -3,13 +3,11 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var priorityQueue_PriorityQueue = require('./PriorityQueue.cjs');
-var priorityQueue_priorityQueueDefault = require('./priorityQueueDefault.cjs');
 require('tslib');
 require('@flemist/pairing-heap');
 require('@flemist/async-utils');
 require('../priority/Priority.cjs');
 
+const priorityQueueDefault = new priorityQueue_PriorityQueue.PriorityQueue();
 
-
-exports.PriorityQueue = priorityQueue_PriorityQueue.PriorityQueue;
-exports.priorityQueueDefault = priorityQueue_priorityQueueDefault.priorityQueueDefault;
+exports.priorityQueueDefault = priorityQueueDefault;
