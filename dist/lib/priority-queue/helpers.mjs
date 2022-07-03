@@ -10,5 +10,6 @@ function createAwaitPriority() {
         return priorityQueue.run(void 0, priority, abortSignal);
     };
 }
+const awaitPriorityDefault = createAwaitPriority();
 
-export { createAwaitPriority };
+export { awaitPriorityDefault, createAwaitPriority };

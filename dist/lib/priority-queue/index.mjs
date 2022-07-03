@@ -1,5 +1,5 @@
 export { PriorityQueue } from './PriorityQueue.mjs';
-export { createAwaitPriority } from './helpers.mjs';
+export { awaitPriorityDefault, createAwaitPriority } from './helpers.mjs';
 import 'tslib';
 import '@flemist/pairing-heap';
 import '@flemist/async-utils';

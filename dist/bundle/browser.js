@@ -230,8 +230,9 @@ return i.trys.push([3,6,,7]),(l=e.func&&e.func(e.abortSignal))&&"function"==type
 return e.resolve(l),[3,7];case 6:
 return c=i.sent(),e.reject(c),[3,7];case 7:
 return[3,1];case 8:return[2]}}))}))},t}()
-;t.Priority=e,t.PriorityQueue=M,t.createAwaitPriority=function(){
-var t=new M;return function(e,r){
-return t.run(void 0,e,r)}
-},t.priorityCompare=n,t.priorityCreate=r,Object.defineProperty(t,"__esModule",{
+;function O(){var t=new M;return function(e,r){
+return t.run(void 0,e,r)}}var z=O()
+;t.Priority=e,t.PriorityQueue=M,t.awaitPriorityDefault=z,
+t.createAwaitPriority=O,
+t.priorityCompare=n,t.priorityCreate=r,Object.defineProperty(t,"__esModule",{
 value:!0})}({});
