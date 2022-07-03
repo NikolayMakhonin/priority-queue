@@ -8,11 +8,11 @@ require('@flemist/pairing-heap');
 require('@flemist/async-utils');
 require('../priority/Priority.cjs');
 
-function createAwaitConcurrency() {
+function createAwaitPriority() {
     const priorityQueue = new priorityQueue_PriorityQueue.PriorityQueue();
-    return function awaitConcurrency(priority, abortSignal) {
+    return function awaitPriority(priority, abortSignal) {
         return priorityQueue.run(void 0, priority, abortSignal);
     };
 }
 
-exports.createAwaitConcurrency = createAwaitConcurrency;
+exports.createAwaitPriority = createAwaitPriority;

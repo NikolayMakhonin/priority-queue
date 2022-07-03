@@ -15,4 +15,4 @@ exports.Priority = priority_Priority.Priority;
 exports.priorityCompare = priority_Priority.priorityCompare;
 exports.priorityCreate = priority_Priority.priorityCreate;
 exports.PriorityQueue = priorityQueue_PriorityQueue.PriorityQueue;
-exports.createAwaitConcurrency = priorityQueue_helpers.createAwaitConcurrency;
+exports.createAwaitPriority = priorityQueue_helpers.createAwaitPriority;

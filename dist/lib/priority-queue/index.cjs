@@ -12,4 +12,4 @@ require('../priority/Priority.cjs');
 
 
 exports.PriorityQueue = priorityQueue_PriorityQueue.PriorityQueue;
-exports.createAwaitConcurrency = priorityQueue_helpers.createAwaitConcurrency;
+exports.createAwaitPriority = priorityQueue_helpers.createAwaitPriority;

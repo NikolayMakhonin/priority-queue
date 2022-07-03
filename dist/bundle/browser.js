@@ -159,13 +159,13 @@ return t.subscribe((t=>{e.abort(t)})),e.signal
 return t.addEventListener("abort",(function(t){
 e.abort(t)})),e.signal};var w={},m={}
 ;Object.defineProperty(m,"__esModule",{value:!0})
-;const S=()=>{};m.AbortSignalFast=class{
+;const P=()=>{};m.AbortSignalFast=class{
 constructor(){
 this.aborted=!1,this.reason=void 0,this._callbacks=void 0
 }subscribe(t){var e
 ;if(null===(e=this._callbacks)||void 0===e?void 0:e.has(t))throw new Error("Already subscribed: "+t)
 ;return this.aborted?(t.call(this,this.reason),
-S):(this._callbacks||(this._callbacks=new Set),
+P):(this._callbacks||(this._callbacks=new Set),
 this._callbacks.add(t),()=>{var e
 ;null===(e=this._callbacks)||void 0===e||e.delete(t)
 })}abort(t){var e
@@ -174,10 +174,10 @@ t.call(this,this.reason)})),this._callbacks=void 0
 }throwIfAborted(){
 if(this.aborted)throw this.reason}
 },Object.defineProperty(w,"__esModule",{value:!0})
-;var x=m,P=g;w.AbortControllerFast=class{
-constructor(){this.signal=new x.AbortSignalFast}
+;var S=m,x=g;w.AbortControllerFast=class{
+constructor(){this.signal=new S.AbortSignalFast}
 abort(t){
-this.signal.aborted||(void 0===t&&((t=new P.AbortError("Aborted with no reason",t))._internal=!0),
+this.signal.aborted||(void 0===t&&((t=new x.AbortError("Aborted with no reason",t))._internal=!0),
 this.signal.abort(t))}
 },Object.defineProperty(p,"__esModule",{value:!0})
 ;var F=y,T=w,E=g;function k(t,e){
@@ -230,7 +230,7 @@ return i.trys.push([3,6,,7]),(l=e.func&&e.func(e.abortSignal))&&"function"==type
 return e.resolve(l),[3,7];case 6:
 return c=i.sent(),e.reject(c),[3,7];case 7:
 return[3,1];case 8:return[2]}}))}))},t}()
-;t.Priority=e,t.PriorityQueue=M,t.createAwaitConcurrency=function(){
+;t.Priority=e,t.PriorityQueue=M,t.createAwaitPriority=function(){
 var t=new M;return function(e,r){
 return t.run(void 0,e,r)}
 },t.priorityCompare=n,t.priorityCreate=r,Object.defineProperty(t,"__esModule",{
