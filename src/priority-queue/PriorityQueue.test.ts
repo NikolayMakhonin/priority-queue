@@ -51,7 +51,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
       // console.log(index)
     }
   })
-  
+
   type FuncParams = {
     name: string,
     startTime: number,
@@ -85,7 +85,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
       return name
     }
   }
-  
+
   function enqueueFunc(
     results: string[],
     funcParams: FuncParams,
@@ -94,7 +94,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
     priorityQueue: PriorityQueue,
   ) {
     const func = createFunc(funcParams.name, results, funcParams.runTime, timeController, timeStart)
-    
+
     function enqueue() {
       results.push(`${timeController.now() - timeStart}-1: ${funcParams.name} enqueue`)
 
@@ -126,7 +126,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
           },
         )
     }
-    
+
     if (funcParams.abortTime != null) {
       timeController.setTimeout(function abortTimerCallback() {
         funcParams.abortController.abort(funcParams.name)
@@ -419,7 +419,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
       startTime3     : [1],
     })()
   })
-  
+
   xit('custom 3', async function () {
     this.timeout(300000)
 
@@ -463,7 +463,7 @@ describe('priority-queue > PriorityQueue', function _describe() {
       startTime3     : [0],
     })()
   })
-  
+
   xit('profiling', async function _it_profiling() {
     this.timeout(1200000)
 

@@ -64,7 +64,7 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
       reject    : promise.reject,
       readyToRun: !taskMode,
     }
-    
+
     this._queue.add(item)
 
     if (taskMode) {
