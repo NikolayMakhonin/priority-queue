@@ -1,29 +1,25 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var tslib = require('tslib');
-var pairingHeap = require('@flemist/pairing-heap');
-var asyncUtils = require('@flemist/async-utils');
-var priority_Priority = require('../priority/Priority.cjs');
+import { __awaiter } from 'tslib';
+import { PairingHeap } from '@flemist/pairing-heap';
+import { CustomPromise } from '@flemist/async-utils';
+import { priorityCompare, priorityCreate } from '../../priority/Priority.mjs';
 
 // const emptyFunc = function emptyFunc(o) {
 //   return o
 // }
 function queueItemLessThan(o1, o2) {
-    return priority_Priority.priorityCompare(o1.priority, o2.priority) < 0;
+    return priorityCompare(o1.priority, o2.priority) < 0;
 }
 let nextOrder = 1;
 class PriorityQueue {
     constructor() {
-        this._queue = new pairingHeap.PairingHeap({
+        this._queue = new PairingHeap({
             lessThanFunc: queueItemLessThan,
         });
     }
     run(func, priority, abortSignal) {
-        const promise = new asyncUtils.CustomPromise(abortSignal);
+        const promise = new CustomPromise(abortSignal);
         this._queue.add({
-            priority: priority_Priority.priorityCreate(nextOrder++, priority),
+            priority: priorityCreate(nextOrder++, priority),
             func,
             abortSignal,
             resolve: promise.resolve,
@@ -33,7 +29,7 @@ class PriorityQueue {
         return promise.promise;
     }
     _process() {
-        return tslib.__awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             if (this._processRunning) {
                 return;
             }
@@ -68,5 +64,4 @@ class PriorityQueue {
     }
 }
 
-exports.PriorityQueue = PriorityQueue;
-exports.queueItemLessThan = queueItemLessThan;
+export { PriorityQueue, queueItemLessThan };

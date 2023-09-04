@@ -1,5 +1,5 @@
 import { PromiseOrValue } from './contracts';
-import { Priority } from "../priority";
+import { Priority } from "../../priority";
 import { IAbortSignalFast } from '@flemist/abort-controller-fast';
 declare type TQueueItem<T> = {
     func: (abortSignal?: IAbortSignalFast) => PromiseOrValue<T>;
