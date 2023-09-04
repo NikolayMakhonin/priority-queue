@@ -1,6 +1,6 @@
 {
   "name": "@flemist/priority-queue",
-  "version": "0.0.10",
+  "version": "1.0.0",
   "description": "TODO",
   "main": "dist/lib/index.cjs",
   "module": "dist/lib/index.mjs",
@@ -92,13 +92,13 @@
     "rollup-plugin-terser": "7.0.2",
     "ts-node": "=10.8.0",
     "tsconfig-paths": "4.0.0",
-    "typescript": "^4.7.4"
+    "typescript": "=4.7.4"
   },
   "dependencies": {
-    "@flemist/abort-controller-fast": "^0.0.6",
-    "@flemist/async-utils": "^0.0.23",
-    "@flemist/pairing-heap": "^0.0.8",
-    "@flemist/time-controller": "^0.0.3",
+    "@flemist/abort-controller-fast": "^1.0.0",
+    "@flemist/async-utils": "^1.0.0",
+    "@flemist/pairing-heap": "^1.0.0",
+    "@flemist/time-controller": "^1.0.0",
     "tslib": "^2.4.0"
   }
 }
