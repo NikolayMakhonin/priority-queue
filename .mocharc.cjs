@@ -7,7 +7,7 @@ module.exports = {
     '@flemist/test-utils/register',
   ],
   'watch-files': ['./src/**'],
-  ignore       : ['./**/*.d.ts'],
+  ignore       : ['./**/*.d.ts', '**/trash/**'],
   'node-option': [
     // 'prof',
   ],
