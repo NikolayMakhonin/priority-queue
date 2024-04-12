@@ -13,9 +13,9 @@ type TQueueItem<T> = {
   readyToRun: boolean
 }
 
-// const emptyFunc = function emptyFunc(o) {
-//   return o
-// }
+const emptyFunc = function emptyFunc(o) {
+  return o
+}
 
 export function queueItemLessThan(o1: TQueueItem<any>, o2: TQueueItem<any>): boolean {
   return priorityCompare(o1.priority, o2.priority) < 0
@@ -92,6 +92,10 @@ export class PriorityQueue implements IPriorityQueue, IPriorityQueueTask {
   _inProcess: boolean
   private async _process() {
     const queue = this._queue
+
+    // чтобы сначала сформировалась очередь, а потом началось выполнение в порядке приоритета
+    // тесты показывают что только такая длинная конструкция прерывает выполнение программы и дает синхронному коду заполнить очередь перед началом выполнения
+    await Promise.resolve().then(emptyFunc)
 
     while (true) {
       // eslint-disable-next-line @typescript-eslint/await-thenable
